@@ -2,6 +2,8 @@ const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 admin.initializeApp();
 const db = admin.database();
+const { CloudTasksClient } = require("@google-cloud/tasks");
+const client = new CloudTasksClient();
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
@@ -92,7 +94,53 @@ exports.getNotifications = functions.https.onRequest((req, res) => {
   });
 });
 
+exports.taskGenerator = async (req, res) => {
+  const taskCount = +process.env.TASK_COUNT || 10;
 
+  for (let i = 0; i < taskCount; i++) {
+    const task = {
+      httpRequest: {
+        httpMethod: 'POST',
+        url: process.env.TASK_ENDPOINT,
+      },
+    }
+
+    const payload = {
+      a: Math.floor(Math.random() * 1000),
+      b: Math.floor(Math.random() * 1000),
+    };
+
+    if (payload) {
+      task.httpRequest.body = Buffer.from(JSON.stringify(payload)).toString("base64");
+      task.httpRequest.headers = {
+        "Content-Type": "application/json",
+      };
+    }
+
+    if (process.env.SERVICE_ACCOUNT_EMAIL) {
+      task.httpRequest.oidcToken = {
+        serviceAccountEmail: process.env.SERVICE_ACCOUNT_EMAIL,
+      }
+    }
+
+    console.log('Sending Task');
+    console.log(task);
+
+    const request = {
+      parent: process.env.TASK_QUEUE_PATH,
+      task,
+    }
+
+    const [response] = await client.createTask(request);
+    console.log(`Created task ${response.name}`);
+
+
+  }
+
+  res.json({ status: "OK" });
+}
+
+/* 
 exports.createTask = async function (payload = 'Hello, im testing!') {
   const MAX_SCHEDULE_LIMIT = 30 * 60 * 60 * 24; // Represents 30 days in seconds.
   const project = 'fir-test-e99ee';
@@ -170,4 +218,4 @@ exports.createTask = async function (payload = 'Hello, im testing!') {
 
 exports.logSomething = async (req, res) => {
   console.log('Function triggered on time!', req.body)
-}
+} */
