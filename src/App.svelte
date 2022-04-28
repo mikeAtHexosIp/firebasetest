@@ -46,7 +46,7 @@
   let notifications = [];
 
   async function helloWorld() {
-    const res = await fetch('http://localhost:5001/fir-test-e99ee/us-central1/helloWorld');
+    const res = await fetch('https://us-central1-fir-test-e99ee.cloudfunctions.net/helloWorld');
     const resText = await res.text();
 
     console.log('hello world', resText);
@@ -54,7 +54,7 @@
   }
 
   async function byeWorld() {
-    const res = await fetch('http://localhost:5001/fir-test-e99ee/us-central1/byeWorld');
+    const res = await fetch('https://us-central1-fir-test-e99ee.cloudfunctions.net/byeWorld');
     const resText = await res.text();
 
     console.log('bye world', resText);
@@ -69,18 +69,18 @@
   byeWorld();
   
 async function getName() {
-  const res = await (await fetch('http://localhost:5001/fir-test-e99ee/us-central1/getName')).json();
+  const res = await (await fetch('https://us-central1-fir-test-e99ee.cloudfunctions.net/getName')).json();
   name = res.name;
 }
 
 async function updateName(name) {
-  const res = await fetch('http://localhost:5001/fir-test-e99ee/us-central1/updateName?name=' + name);
+  const res = await fetch('https://us-central1-fir-test-e99ee.cloudfunctions.net/updateName?name=' + name);
   console.log(res);
 }
 
   
 async function getNotifications() {
-  const res = await (await fetch('http://localhost:5001/fir-test-e99ee/us-central1/getNotifications')).json();
+  const res = await (await fetch('https://us-central1-fir-test-e99ee.cloudfunctions.net/getNotifications')).json();
   console.log('notif', res);
   notifications = res;
 }
