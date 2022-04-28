@@ -61,9 +61,9 @@
     return resText;
   }
 
-  // async function sendMessage(message) {
-  //   return await fetch('http://localhost:5001/fir-test-e99ee/us-central1/addMessage?text=' + message);    
-  // }
+  async function sendMessage(message) {
+    return await fetch('http://localhost:5001/fir-test-e99ee/us-central1/addMessage?text=' + message);    
+  }
 
   helloWorld();
   byeWorld();
@@ -93,6 +93,7 @@ function handleSubmit(e) {
 }
 
 getName();
+
 
 </script>
 
