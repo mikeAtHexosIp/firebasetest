@@ -3,7 +3,6 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 const db = admin.database();
 const { CloudTasksClient } = require("@google-cloud/tasks");
-const client = new CloudTasksClient();
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
@@ -105,10 +104,9 @@ exports.createTask = async function (payload = 'Hello, im testing!') {
   const date = new Date('04/28/22 18:35'); // Intended date to schedule task
 
   // Imports the Google Cloud Tasks firebase --debug deploylibrary.
-  const { v2beta3 } = require('@google-cloud/tasks');
 
   // Instantiates a client.
-  const client = new v2beta3.CloudTasksClient();
+  const client = new CloudTasksClient();
 
   // Construct the fully qualified queue name.
   const parent = client.queuePath(project, location, queue);
@@ -170,7 +168,8 @@ exports.createTask = async function (payload = 'Hello, im testing!') {
 
 }
 
-exports.getTask = async (req, res) => {
+/* exports.getTask = async (req, res) => {
   req.set('no-cors')
   console.log('task res en index: ', res);
 }
+ */
