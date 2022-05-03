@@ -2,3 +2,8 @@
 /public/build/
 
 .DS_Store
+database-debug.log
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+.firebase/hosting.cHVibGlj.cache
