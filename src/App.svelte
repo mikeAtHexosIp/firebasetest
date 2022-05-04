@@ -22,8 +22,8 @@
   // async function sendMessage(message) {
   //   return await fetch('http://localhost:9000/fir-test-e99ee/us-central1/addMessage?text=' + message);
   // }
-  helloWorld();
-  byeWorld();
+/*   helloWorld();
+  byeWorld(); */
 
   async function getName() {
     const res = await (

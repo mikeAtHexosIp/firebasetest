@@ -10,7 +10,7 @@ exports.createTask = async function (payload = 'Hello, im testing!') {
   const queue = 'new-task';
   const location = 'us-central1';
   const url = 'https://us-central1-fir-test-e99ee.cloudfunctions.net/helloWorld';
-  const email = 'fir-test-e99ee@appspot.gserviceaccount.com';
+  const email = 'taskcreator@fir-test-e99ee.iam.gserviceaccount.com';
 
   // Instantiates a client.
   const client = new CloudTasksClient();
@@ -36,7 +36,7 @@ exports.createTask = async function (payload = 'Hello, im testing!') {
       body,
     },
     scheduleTime: {
-      seconds: 1 * 60 + Date.now() / 1000, // Represents 2 minute in the future.
+      seconds: 4 * 60 + Date.now() / 1000, // Represents 4 minutes in the future.
     },
   };
 
@@ -65,7 +65,7 @@ exports.helloWorld = functions.https.onRequest((request, response) => {
   try {
     functions.logger.log("Hello logs!", { structuredData: true });
     response.set('Access-Control-Allow-Origin', '*');
-    response.json("Hello from Firebase!");
+    response.send("Hello from Firebase!");
   } catch (err) {
     console.log('HelloWorld error: ', err);
   }
