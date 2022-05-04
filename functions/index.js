@@ -5,7 +5,6 @@ const db = admin.database();
 const { CloudTasksClient } = require("@google-cloud/tasks");
 
 exports.createTask = async function (payload = 'Hello, im testing!') {
-  console.log('START: ', new Date());
   const project = 'fir-test-e99ee';
   const queue = 'new-task';
   const location = 'us-central1';
@@ -18,6 +17,7 @@ exports.createTask = async function (payload = 'Hello, im testing!') {
   // Construct the fully qualified queue name.
   const parent = client.queuePath(project, location, queue);
 
+  console.log('parent', parent)
   // Convert message to buffer.
   const convertedPayload = JSON.stringify(payload);
   const body = Buffer.from(convertedPayload).toString('base64');
@@ -36,16 +36,13 @@ exports.createTask = async function (payload = 'Hello, im testing!') {
       body,
     },
     scheduleTime: {
-      seconds: 4 * 60 + Date.now() / 1000, // Represents 4 minutes in the future.
+      seconds: 1 * 60 + Date.now() / 1000, // Represents 4 minutes in the future.
     },
   };
-
-  console.log('TASK: ', task);
 
   try {
     // Send create task request.
     const [response] = await client.createTask({ parent, task });
-    console.log('response', response);
     console.log(`Created task ${response.name}`);
     return response.name;
   } catch (error) {
@@ -54,9 +51,6 @@ exports.createTask = async function (payload = 'Hello, im testing!') {
   }
 
 }
-
-this.createTask();
-
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
@@ -110,16 +104,16 @@ exports.updateName = functions.https.onRequest(async (req, res) => {
   // Grab the text parameter.
   const name = req.query.name;
   // Push the new message into Firestore using the Firebase Admin SDK.
-  const writeResult = await admin.firestore().collection('contents').doc('home').update({ name }, { merge: true });
+  await admin.firestore().collection('contents').doc('home').update({ name }, { merge: true });
   // Send back a message that we've successfully written the message
   res.json({ result: `Name updated to: ${name}.` });
 });
 
-exports.getName = functions.https.onRequest((req, res) => {
+exports.getName = functions.https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
   // Grab the text parameter.
   admin.firestore().collection('contents').doc('home').onSnapshot((doc) => {
-    console.log("Current data: ", doc.data());
+    console.log("Current data!!!!: ", doc.data());
     res.json(doc.data());
   });
   // Push the new message into Firestore using the Firebase Admin SDK.
@@ -128,6 +122,7 @@ exports.getName = functions.https.onRequest((req, res) => {
 exports.notifyNameChange = functions.firestore.document('/contents/home')
   .onUpdate(async (snap, context) => {
     // Grab the current value of what was written to Firestore.
+    console.log('snap: ', snap)
     const currentName = snap.before.data().name;
     const newName = snap.after.data().name;
 

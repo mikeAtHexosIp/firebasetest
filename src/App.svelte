@@ -2,17 +2,19 @@
   export let name;
   let nameValue = "";
   let notifications = [];
+
   async function helloWorld() {
     const res = await fetch(
-      "http://localhost:9000/fir-test-e99ee/us-central1/helloWorld"
+      "https://us-central1-fir-test-e99ee.cloudfunctions.net/helloWorld"
     );
     const resText = await res.text();
     console.log("hello world", resText);
     return resText;
   }
+
   async function byeWorld() {
     const res = await fetch(
-      "http://localhost:9000/fir-test-e99ee/us-central1/byeWorld"
+      "https://us-central1-fir-test-e99ee.cloudfunctions.net/byeWorld"
     );
     const resText = await res.text();
     console.log("bye world", resText);
@@ -20,33 +22,33 @@
   }
 
   // async function sendMessage(message) {
-  //   return await fetch('http://localhost:9000/fir-test-e99ee/us-central1/addMessage?text=' + message);
+  //   return await fetch('http://localhost:5000/fir-test-e99ee/us-central1/addMessage?text=' + message);
   // }
-/*   helloWorld();
+  /*   helloWorld();
   byeWorld(); */
 
   async function getName() {
     const res = await (
-      await fetch("http://localhost:9000/fir-test-e99ee/us-central1/getName")
+      await fetch("https://us-central1-fir-test-e99ee.cloudfunctions.net/getName")
     ).json();
     name = await res.name;
   }
+
   async function updateName(name) {
-    const res = await fetch(
-      "http://localhost:9000/fir-test-e99ee/us-central1/updateName?name=" + name
-    );
+    const res = await fetch("https://us-central1-fir-test-e99ee.cloudfunctions.net/updateName?name=" + name);
     console.log(res);
   }
 
   async function getNotifications() {
     const res = await (
       await fetch(
-        "http://localhost:49833/fir-test-e99ee/us-central1/getNotifications"
+        "https://us-central1-fir-test-e99ee.cloudfunctions.net/getNotifications"
       )
     ).json();
     console.log("notif", res);
     notifications = res;
   }
+  
   function handleSubmit(e) {
     e.preventDefault();
     const name = nameValue;
@@ -62,7 +64,9 @@
     Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn
     how to build Svelte apps.
   </p>
-  <a href="https://us-central1-fir-test-e99ee.cloudfunctions.net/helloWorld">PRESIONE AQUIII</a>
+  <a href="https://us-central1-fir-test-e99ee.cloudfunctions.net/helloWorld"
+    >PRESIONE AQUIII</a
+  >
   <form id="update-name">
     <input
       type="text"
