@@ -5,7 +5,7 @@
 
   async function helloWorld() {
     const res = await fetch(
-      "https://us-central1-fir-test-e99ee.cloudfunctions.net/helloWorld"
+      "https://us-central1-fir-test-e99ee.cloudfunctions.net/getNotifications/helloWorld"
     );
     const resText = await res.text();
     console.log("hello world", resText);
@@ -14,29 +14,26 @@
 
   async function byeWorld() {
     const res = await fetch(
-      "https://us-central1-fir-test-e99ee.cloudfunctions.net/byeWorld"
+      "https://us-central1-fir-test-e99ee.cloudfunctions.net/getNotifications/byeWorld"
     );
     const resText = await res.text();
     console.log("bye world", resText);
     return resText;
   }
 
-  // async function sendMessage(message) {
-  //   return await fetch('http://localhost:5000/fir-test-e99ee/us-central1/addMessage?text=' + message);
-  // }
-  /*   helloWorld();
-  byeWorld(); */
-
   async function getName() {
-    const res = await (
-      await fetch("https://us-central1-fir-test-e99ee.cloudfunctions.net/getName")
-    ).json();
-    name = await res.name;
+    await fetch('https://us-central1-fir-test-e99ee.cloudfunctions.net/getNotifications/getName').then(async(response) => {
+      const res = await response.json();
+      return res;
+    }).then((data) => {
+      name = data.name;
+    })
+  
   }
 
   async function updateName(name) {
-    const res = await fetch("https://us-central1-fir-test-e99ee.cloudfunctions.net/updateName?name=" + name);
-    console.log(res);
+    const res = await fetch("https://us-central1-fir-test-e99ee.cloudfunctions.net/getNotifications/updateName?name=" + name);
+    console.log(`Name updated to: ${name}`);
   }
 
   async function getNotifications() {
@@ -45,28 +42,28 @@
         "https://us-central1-fir-test-e99ee.cloudfunctions.net/getNotifications"
       )
     ).json();
-    console.log("notif", res);
     notifications = res;
   }
   
   function handleSubmit(e) {
     e.preventDefault();
     const name = nameValue;
-    console.log("name", name);
     updateName(name);
   }
+
+  async function createTask() {
+    const res = await fetch("https://us-central1-fir-test-e99ee.cloudfunctions.net/getNotifications/handleTask");
+    const resText = await res.text();
+    console.log("Response:", resText);
+    return resText;
+  }
+
   getName();
 </script>
 
 <main>
   <h1>Hello {name}!</h1>
-  <p>
-    Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn
-    how to build Svelte apps.
-  </p>
-  <a href="https://us-central1-fir-test-e99ee.cloudfunctions.net/helloWorld"
-    >PRESIONE AQUIII</a
-  >
+  
   <form id="update-name">
     <input
       type="text"
@@ -77,7 +74,8 @@
     />
     <button on:click={handleSubmit}>Update name</button>
   </form>
-
+  
+  <button on:click={createTask}>Create task to execute HelloWorld in 2 minutes</button>
   {#if notifications.length > 0}
     <ul class="notifications">
       {#each notifications as notification}

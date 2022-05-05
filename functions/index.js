@@ -8,7 +8,7 @@ exports.createTask = async function (payload = 'Hello, im testing!') {
   const project = 'fir-test-e99ee';
   const queue = 'new-task';
   const location = 'us-central1';
-  const url = 'https://us-central1-fir-test-e99ee.cloudfunctions.net/helloWorld';
+  const url = "https://localhost:4000/fir-test-e99ee/us-central1/helloWorld";
   const email = 'taskcreator@fir-test-e99ee.iam.gserviceaccount.com';
 
   // Instantiates a client.
@@ -36,7 +36,7 @@ exports.createTask = async function (payload = 'Hello, im testing!') {
       body,
     },
     scheduleTime: {
-      seconds: 1 * 60 + Date.now() / 1000, // Represents 4 minutes in the future.
+      seconds: 2 * 60 + Date.now() / 1000, // Represents 2 minutes in the future.
     },
   };
 
@@ -49,12 +49,8 @@ exports.createTask = async function (payload = 'Hello, im testing!') {
     // Construct error for Stackdriver Error Reporting
     console.error(Error(error.message));
   }
-
 }
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
 exports.helloWorld = functions.https.onRequest((request, response) => {
   try {
     functions.logger.log("Hello logs!", { structuredData: true });
@@ -66,18 +62,30 @@ exports.helloWorld = functions.https.onRequest((request, response) => {
 });
 
 exports.byeWorld = functions.https.onRequest((request, response) => {
-  functions.logger.log("Bye logs!", { structuredData: true });
-  response.set('Access-Control-Allow-Origin', '*');
-  response.send("Bye from Firebase!");
+  try {
+    functions.logger.log("Hello logs!", { structuredData: true });
+    response.set('Access-Control-Allow-Origin', '*');
+    response.send("Bye from Firebase!");
+  } catch (err) {
+    console.log('ByeWorld error: ', err);
+  }
 });
+
+exports.handleTask = functions.https.onRequest((request, response) => {
+  try {
+    response.set('Access-Control-Allow-Origin', '*');
+    this.createTask();
+    response.send("Task Created!");
+  } catch (err) {
+    console.log('handleTask error: ', err);
+  }
+})
 
 exports.addMessage = functions.https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
-  // Grab the text parameter.
   const original = req.query.text;
-  // Push the new message into Firestore using the Firebase Admin SDK.
   const writeResult = await admin.firestore().collection('messages').add({ original: original });
-  // Send back a message that we've successfully written the message
+
   res.json({ result: `Message with ID: ${writeResult.id} added.` });
 });
 
@@ -85,38 +93,31 @@ exports.addMessage = functions.https.onRequest(async (req, res) => {
 // uppercase version of the message to /messages/:documentId/uppercase
 exports.makeUppercase = functions.firestore.document('/messages/{documentId}')
   .onCreate((snap, context) => {
-    // Grab the current value of what was written to Firestore.
     const original = snap.data().original;
-
-    // Access the parameter `{documentId}` with `context.params`
     functions.logger.log('Uppercasing', context.params.documentId, original);
-
     const uppercase = original.toUpperCase();
 
-    // You must return a Promise when performing asynchronous tasks inside a Functions such as
-    // writing to Firestore.
-    // Setting an 'uppercase' field in Firestore document returns a Promise.
     return snap.ref.set({ uppercase }, { merge: true });
   });
 
 exports.updateName = functions.https.onRequest(async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
-  // Grab the text parameter.
   const name = req.query.name;
-  // Push the new message into Firestore using the Firebase Admin SDK.
   await admin.firestore().collection('contents').doc('home').update({ name }, { merge: true });
-  // Send back a message that we've successfully written the message
+
   res.json({ result: `Name updated to: ${name}.` });
 });
 
-exports.getName = functions.https.onRequest(async (req, res) => {
+exports.getName = functions.https.onRequest(async(req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
-  // Grab the text parameter.
-  admin.firestore().collection('contents').doc('home').onSnapshot((doc) => {
-    console.log("Current data!!!!: ", doc.data());
-    res.json(doc.data());
-  });
-  // Push the new message into Firestore using the Firebase Admin SDK.
+
+  const coll = admin.firestore().collection('contents').doc('home');
+  const doc = await coll.get();
+  if (doc.exists) {
+    return res.json(doc.data()); 
+  } else {
+    console.log('NO DATA!!');
+  }
 });
 
 exports.notifyNameChange = functions.firestore.document('/contents/home')
