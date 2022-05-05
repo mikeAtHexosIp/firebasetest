@@ -5,7 +5,7 @@
 
   async function helloWorld() {
     const res = await fetch(
-      "https://us-central1-fir-test-e99ee.cloudfunctions.net/getNotifications/helloWorld"
+      "https://us-central1-fir-test-e99ee.cloudfunctions.net/helloWorld"
     );
     const resText = await res.text();
     console.log("hello world", resText);
@@ -14,7 +14,7 @@
 
   async function byeWorld() {
     const res = await fetch(
-      "https://us-central1-fir-test-e99ee.cloudfunctions.net/getNotifications/byeWorld"
+      "https://us-central1-fir-test-e99ee.cloudfunctions.net/byeWorld"
     );
     const resText = await res.text();
     console.log("bye world", resText);
@@ -22,7 +22,7 @@
   }
 
   async function getName() {
-    await fetch('https://us-central1-fir-test-e99ee.cloudfunctions.net/getNotifications/getName').then(async(response) => {
+    await fetch('https://us-central1-fir-test-e99ee.cloudfunctions.net/getName').then(async(response) => {
       const res = await response.json();
       return res;
     }).then((data) => {
@@ -32,7 +32,7 @@
   }
 
   async function updateName(name) {
-    const res = await fetch("https://us-central1-fir-test-e99ee.cloudfunctions.net/getNotifications/updateName?name=" + name);
+    const res = await fetch("https://us-central1-fir-test-e99ee.cloudfunctions.net/updateName?name=" + name);
     console.log(`Name updated to: ${name}`);
   }
 
@@ -52,7 +52,7 @@
   }
 
   async function createTask() {
-    const res = await fetch("https://us-central1-fir-test-e99ee.cloudfunctions.net/getNotifications/handleTask");
+    const res = await fetch("https://us-central1-fir-test-e99ee.cloudfunctions.net/handleTask");
     const resText = await res.text();
     console.log("Response:", resText);
     return resText;
