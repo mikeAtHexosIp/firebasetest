@@ -31,12 +31,12 @@ exports.createTask = async function (payload = 'Hello, im testing!') {
         audience: new URL(url).origin,
       },
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'text/html',
       },
       body,
     },
     scheduleTime: {
-      seconds: 2 * 60 + Date.now() / 1000, // Represents 2 minutes in the future.
+      seconds: 1 * 60 + Date.now() / 1000, // Represents 2 minutes in the future.
     },
   };
 
@@ -116,7 +116,7 @@ exports.getName = functions.https.onRequest(async (req, res) => {
     const doc = await coll.get();
 
     if (doc.exists) {
-      return res.json(doc.data());
+      res.json(doc.data());
     } else {
       console.log('NO DATA!!');
     }

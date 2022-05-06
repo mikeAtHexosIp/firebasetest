@@ -23,15 +23,7 @@
   }
 
   async function getName() {
-    await fetch(
-      "https://us-central1-fir-test-e99ee.cloudfunctions.net/getName",
-      {
-        mode: "cors",
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-        },
-      }
-    )
+    await fetch("https://us-central1-fir-test-e99ee.cloudfunctions.net/getName")
       .then(async (response) => {
         const res = await response.json();
         return res;
@@ -90,7 +82,7 @@
   </form>
 
   <button on:click={createTask}
-    >Create task to execute HelloWorld in 2 minutes</button
+    >Create task to execute HelloWorld in 1 minute</button
   >
   {#if notifications.length > 0}
     <ul class="notifications">
