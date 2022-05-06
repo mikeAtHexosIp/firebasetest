@@ -2,6 +2,7 @@
   export let name;
   let nameValue = "";
   let notifications = [];
+  let today = new Date();
 
   async function helloWorld() {
     const res = await fetch(
@@ -60,7 +61,7 @@
       'https://us-central1-fir-test-e99ee.cloudfunctions.net/handleTask'
     );
     const resText = await res.text();
-    console.log("Response:", resText);
+    console.log(`${resText} at: ${today.getHours()}:${today.getMinutes()}`);
     return resText;
   }
 

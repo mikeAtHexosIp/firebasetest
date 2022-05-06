@@ -8,7 +8,7 @@ exports.createTask = async function (payload = 'Hello, im testing!') {
   const project = 'fir-test-e99ee';
   const queue = 'new-task';
   const location = 'us-central1';
-  const url = "https://localhost:4000/fir-test-e99ee/us-central1/helloWorld";
+  const url = 'https://us-central1-fir-test-e99ee.cloudfunctions.net/helloWorld';
   const email = 'taskcreator@fir-test-e99ee.iam.gserviceaccount.com';
 
   // Instantiates a client.
@@ -54,7 +54,7 @@ exports.createTask = async function (payload = 'Hello, im testing!') {
 exports.helloWorld = functions.https.onRequest((request, response) => {
   try {
     functions.logger.log("Hello logs!", { structuredData: true });
-    response.set('Access-Control-Allow-Origin', '*');
+    response.header('Access-Control-Allow-Origin', '*');
     response.send("Hello from Firebase!");
   } catch (err) {
     console.log('HelloWorld error: ', err);
@@ -64,7 +64,7 @@ exports.helloWorld = functions.https.onRequest((request, response) => {
 exports.byeWorld = functions.https.onRequest((request, response) => {
   try {
     functions.logger.log("Hello logs!", { structuredData: true });
-    response.set('Access-Control-Allow-Origin', '*');
+    response.header('Access-Control-Allow-Origin', '*');
     response.send("Bye from Firebase!");
   } catch (err) {
     console.log('ByeWorld error: ', err);
@@ -73,16 +73,17 @@ exports.byeWorld = functions.https.onRequest((request, response) => {
 
 exports.handleTask = functions.https.onRequest((request, response) => {
   try {
-    response.set('Access-Control-Allow-Origin', '*');
+    response.header('Access-Control-Allow-Origin', '*');
     this.createTask();
     response.send("Task Created!");
+    return;
   } catch (err) {
     console.log('handleTask error: ', err);
   }
 })
 
 exports.addMessage = functions.https.onRequest(async (req, res) => {
-  res.set('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Origin', '*');
   const original = req.query.text;
   const writeResult = await admin.firestore().collection('messages').add({ original: original });
 
@@ -101,7 +102,7 @@ exports.makeUppercase = functions.firestore.document('/messages/{documentId}')
   });
 
 exports.updateName = functions.https.onRequest(async (req, res) => {
-  res.set('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Origin', '*');
   const name = req.query.name;
   await admin.firestore().collection('contents').doc('home').update({ name }, { merge: true });
 
@@ -109,7 +110,7 @@ exports.updateName = functions.https.onRequest(async (req, res) => {
 });
 
 exports.getName = functions.https.onRequest(async(req, res) => {
-  res.set('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Origin', '*');
 
   const coll = admin.firestore().collection('contents').doc('home');
   const doc = await coll.get();
@@ -132,7 +133,7 @@ exports.notifyNameChange = functions.firestore.document('/contents/home')
 
 
 exports.getNotifications = functions.https.onRequest((req, res) => {
-  res.set('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Origin', '*');
 
   let notifications = [];
   admin.firestore().collection('notifications').onSnapshot((querySnapshot) => {
