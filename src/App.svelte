@@ -6,7 +6,7 @@
 
   async function helloWorld() {
     const res = await fetch(
-      'https://us-central1-fir-test-e99ee.cloudfunctions.net/helloWorld'
+      "https://us-central1-fir-test-e99ee.cloudfunctions.net/helloWorld"
     );
     const resText = await res.text();
     console.log("hello world", resText);
@@ -15,7 +15,7 @@
 
   async function byeWorld() {
     const res = await fetch(
-      'https://us-central1-fir-test-e99ee.cloudfunctions.net/byeWorld'
+      "https://us-central1-fir-test-e99ee.cloudfunctions.net/byeWorld"
     );
     const resText = await res.text();
     console.log("bye world", resText);
@@ -23,7 +23,15 @@
   }
 
   async function getName() {
-    await fetch('https://us-central1-fir-test-e99ee.cloudfunctions.net/getName')
+    await fetch(
+      "https://us-central1-fir-test-e99ee.cloudfunctions.net/getName",
+      {
+        mode: "cors",
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
+      }
+    )
       .then(async (response) => {
         const res = await response.json();
         return res;
@@ -35,7 +43,7 @@
 
   async function updateName(name) {
     const res = await fetch(
-      'https://us-central1-fir-test-e99ee.cloudfunctions.net/updateName?name=' +
+      "https://us-central1-fir-test-e99ee.cloudfunctions.net/updateName?name=" +
         name
     );
     console.log(`Name updated to: ${name}`);
@@ -44,7 +52,7 @@
   async function getNotifications() {
     const res = await (
       await fetch(
-        'https://us-central1-fir-test-e99ee.cloudfunctions.net/getNotifications'
+        "https://us-central1-fir-test-e99ee.cloudfunctions.net/getNotifications"
       )
     ).json();
     notifications = res;
@@ -58,7 +66,7 @@
 
   async function createTask() {
     const res = await fetch(
-      'https://us-central1-fir-test-e99ee.cloudfunctions.net/handleTask'
+      "https://us-central1-fir-test-e99ee.cloudfunctions.net/handleTask"
     );
     const resText = await res.text();
     console.log(`${resText} at: ${today.getHours()}:${today.getMinutes()}`);
