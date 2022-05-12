@@ -4,6 +4,10 @@ admin.initializeApp();
 const db = admin.database();
 const { CloudTasksClient } = require("@google-cloud/tasks");
 
+const config = functions.config();
+
+console.log('ENV QUE SE MOSTRA', config.vars.name);
+
 exports.createTask = async function (payload = 'Hello, im testing!') {
   const project = 'fir-test-e99ee';
   const queue = 'new-task';
